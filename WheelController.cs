@@ -21,11 +21,6 @@ public class WheelController : MonoBehaviour
     private float currentAcceleration;
     private float currentTurnAngle;
 
-
-    void Start()
-    {     
-    }
-
     void FixedUpdate()
     {
         currentAcceleration = acceleration * (Input.GetAxis("Vertical"));

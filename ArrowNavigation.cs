@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class Navigation : MonoBehaviour
@@ -7,7 +8,12 @@ public class Navigation : MonoBehaviour
 
     private void Start()
     {
-        checkPoint = GameObject.FindGameObjectWithTag("CheckPoint").transform; 
+        try
+        {
+            checkPoint = GameObject.FindGameObjectWithTag("CheckPoint").transform;
+        }catch(System.Exception)
+        {
+        }
     }
     void Update()
     {

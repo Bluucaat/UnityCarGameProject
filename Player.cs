@@ -1,16 +1,17 @@
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     private bool isColliding = false;
     private float collisionStartTime = 0f;
-    private float collisionDuration = 2f;
+    private float collisionDuration = 3f;
     public int checkPointCounter;
-    private GameObject gameManager;
+    private GameManager gmScript;
 
     private void Start()
     {
-        gameManager = GameObject.Find("GameManager");
+        gmScript = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -18,10 +19,14 @@ public class Player : MonoBehaviour
         {
             collision.gameObject.tag = "Collided";
             Debug.Log("You have collided with a small object.");
+            gmScript.setScore(-1);
+            gmScript.scoreText.SetText("Current Score: {0}/{1}", gmScript.getScore(), gmScript.goalScore);
         }
         else if (collision.gameObject.CompareTag("CLT2"))
         {
             Debug.Log("You have collided with a car.");
+            gmScript.setScore(-3);
+            gmScript.scoreText.SetText("Current Score: {0}/{1}", gmScript.getScore(), gmScript.goalScore);
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -50,9 +55,14 @@ public class Player : MonoBehaviour
                 Destroy(checkpoint);
                 Destroy(npc);
                 isColliding = false;        
-                gameManager.GetComponent<CheckPointUpdate>().GenerateCheckpoint();
+                gmScript.GenerateCheckpoint();
             }
         }
+    }
+
+    public bool getColliding()
+    {
+        return isColliding;
     }
 
 
