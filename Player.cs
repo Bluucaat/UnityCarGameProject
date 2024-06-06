@@ -8,9 +8,11 @@ public class Player : MonoBehaviour
     private float collisionDuration = 3f;
     public int checkPointCounter;
     private GameManager gmScript;
+    public AudioSource checkPointSE;
 
     private void Start()
     {
+        checkPointSE = GetComponent<AudioSource>();
         gmScript = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
     private void OnCollisionEnter(Collision collision)
@@ -52,6 +54,8 @@ public class Player : MonoBehaviour
             GameObject npc = GameObject.FindGameObjectWithTag("ActiveNPC");
             if (checkpoint != null)
             {
+                checkPointSE.gameObject.SetActive(true);
+                checkPointSE.Play();
                 Destroy(checkpoint);
                 Destroy(npc);
                 isColliding = false;        

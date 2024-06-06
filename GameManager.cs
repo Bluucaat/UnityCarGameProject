@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] public TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI timer;
     [SerializeField] public GameObject[] cars;
-    [SerializeField] TextMeshProUGUI gameOverText; 
+    [SerializeField] TextMeshProUGUI gameOverText;
+    public AudioSource checkPointSE;
     private GameObject[] characterPrefabs;
     private Vector3[][] coordArray = {
         new Vector3[]{new Vector3(64.39f, 0.19f, 44.02f), new Vector3(185.57f, 0.176f, 45.03f), new Vector3(73.52057f, 0.176f, 165.4696f), 
@@ -26,15 +27,17 @@ public class GameManager : MonoBehaviour
     private int currentCoords = -1;
     private int coordinatesChoice = -1;
     private int characterChoice;
-    public int goalScore = 100;
+    public int goalScore =100;
     private int currentScore = 0;
     private int timeLeft = 210;
     public float timeRemaining = 0;
     public bool timeIsRunning;
+    public bool gameover = false;
+
 
     public void Start()
     {
-
+        checkPointSE = GetComponent<AudioSource>();
         index = PlayerPrefs.GetInt("carIndex"); // Get the selected car name
         GameObject carPrefab = Instantiate(cars[index], new Vector3(60.2f, 0.2f, 15.85f), Quaternion.identity);
 
@@ -69,6 +72,7 @@ public class GameManager : MonoBehaviour
     {
         if(GameObject.FindGameObjectWithTag("CheckPoint") == null)
         {
+            checkPointSE.Play();
             GenerateCheckpoint();
         }
         bool isColliding = player.GetComponent<Player>().getColliding();
@@ -78,6 +82,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            if(!gameover)
             timeIsRunning = true;
         }
         if (timeLeft == 0)
@@ -100,7 +105,7 @@ public class GameManager : MonoBehaviour
             {
                 currentScore += 30;
             }
-            if (currentScore >= 100)
+            if (currentScore >= goalScore)
             {
                 scoreText.color = Color.green;
                 GameOver(true);
@@ -127,10 +132,14 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(bool isWin)
     {
+        gameover = true;
+        
         if (isWin)
         {
             gameOverText.SetText("You won!");
+            
         }
+        timeIsRunning = false;
         gameOverText.gameObject.SetActive(true);
         StartCoroutine(ReturnToMainMenuAfterDelay(15));
     }
